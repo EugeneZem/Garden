@@ -5,6 +5,8 @@
 #include <string>
 #include <QObject>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QDebug>
 
 enum fieldsForConnect{
@@ -24,7 +26,11 @@ public:
     explicit DBPlants(QObject *parent = nullptr);
     ~DBPlants();
 
-    bool ConnectToDataBase(std::vector<std::string> dataForConnect);
+    void AddDataBase(QString driver, QString nameDB);
+
+    bool ConnectToDataBase(std::vector<QString> dataForConnect);
+
+    QSqlError GetLastError() const;
 
     QString databaseName() const;
 
@@ -32,12 +38,14 @@ public:
 
     void RequestToDB(std::string request);
 
-    std::vector<std::string> ConnectionInfo();
+    std::vector<QString> ConnectionInfo();
 
 private:
+    QSqlDatabase* dataBase_;
 
+    QSqlQuery* dataQuery_;
 
-    std::vector<std::string> dataConnection_;
+    std::vector<QString> dataConnection_;
 
 };
 

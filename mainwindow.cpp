@@ -7,7 +7,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    msg_ = new QMessageBox(this);
 
+    bd_ = new DBPlants();
 }
 
 MainWindow::~MainWindow()
@@ -19,10 +21,22 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pB_Action_clicked()
 {
+    bd_->AddDataBase("PSQL", "PlantDB");
+
+
     bool connected = bd_->ConnectToDataBase(bd_->ConnectionInfo());
 
-    if(connected) ui->statusbar->showMessage(bd_->databaseName());
-
+    if(connected)
+    {
+        ui->statusbar->showMessage(bd_->databaseName());
+    }
+    else
+    {
+        bd_->DisconnectDataBase();
+        msg_->setIcon(QMessageBox::Critical);
+        msg_->setText(bd_->GetLastError().text());
+        msg_->exec();
+    }
 }
 
 

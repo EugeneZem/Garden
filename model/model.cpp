@@ -3,41 +3,52 @@
 DBPlants::DBPlants(QObject *parent)
     : QObject{parent}
 {
-
-//    dataBase = new QSqlDatabase();
-
-
+    dataBase_ = new QSqlDatabase();
+    dataQuery_ = new QSqlQuery();
 }
 
 DBPlants::~DBPlants()
 {
-
+    delete dataBase_;
+    delete dataQuery_;
 }
 
-bool DBPlants::ConnectToDataBase(std::vector<std::string> dataForConnect)
+void DBPlants::AddDataBase(QString driver, QString nameDB)
 {
-    QSqlDatabase dataBase_ = QSqlDatabase::addDatabase("QPSQL");
-    dataBase_.setHostName("localhost");
-    dataBase_.setDatabaseName("Spider");
-    dataBase_.setUserName("postgres");
-    dataBase_.setPassword("392260");
+    *dataBase_ = QSqlDatabase::addDatabase(driver, nameDB);
+    *dataQuery_ = QSqlQuery(*dataBase_);
+}
 
-    qDebug() << dataBase_.databaseName();
-    return dataBase_.open();
+bool DBPlants::ConnectToDataBase(std::vector<QString> data)
+{
+    dataBase_->setHostName(data[hostName]);
+    dataBase_->setDatabaseName(data[dbName]);
+    dataBase_->setUserName(data[login]);
+    dataBase_->setPassword(data[pass]);
+    dataBase_->setPort(data[port].toInt());
+
+    return dataBase_->open();
+}
+
+QSqlError DBPlants::GetLastError() const
+{
+    return dataBase_->lastError();
 }
 
 QString DBPlants::databaseName() const
 {
-return "dataBase_.databaseName()";
+    return dataBase_->connectionName();
 }
 
-
-
-std::vector<std::string> DBPlants::ConnectionInfo()
+void DBPlants::DisconnectDataBase()
 {
-    std::vector<std::string> conectedData;
 
-    conectedData.clear();
+}
+
+std::vector<QString> DBPlants::ConnectionInfo()
+{
+    std::vector<QString> conectedData;
+
     conectedData.resize(5);
     conectedData[hostName]  = "localhost";
     conectedData[dbName]    = "Spider";

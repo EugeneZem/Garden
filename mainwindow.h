@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 #include "model.h"
 
 QT_BEGIN_NAMESPACE
@@ -25,5 +26,7 @@ private:
     Ui::MainWindow *ui;
 
     DBPlants* bd_;
+
+    QMessageBox* msg_;
 };
 #endif // MAINWINDOW_H
